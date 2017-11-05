@@ -1,27 +1,62 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>{{ page.title }} :: Motýli</title>
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-  </head>
+<html lang="cs">
+<head>
+  <title>{{ page.title }} :: {{ site.title }}</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <body>
-    <nav>
-<ul>
-<li><a href="/">&#x1F3E0;</a></li>
-<li><a href="/attacus/">Attacus</a></li>
-</ul>
-    </nav>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
 
-<div class="container">
-  {{ content }}
-</div>
+<body>
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
+    <a class="navbar-brand" href="/">Motýli</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        {% for item in site.data.menu.items %}
+          {% assign active = false %}
+          {% if item.url == '/' %}
+            {% if page.url == '/' %}
+              {% assign active = true %}
+            {% elsif page.url == '/' %}
+              {% assign active = true %}
+            {% endif %}
+          {% else %}
+            {% if page.url contains item.url %}
+              {% assign active = true %}
+            {% endif %}
+          {% endif %}
+          <li class="nav-item {% if active %}active{% endif %}">
+            <a class="nav-link" href="{{ item.url }}">{{ item.title }}{% if active %}<span class="sr-only">(current){%endif %}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </nav>
 
-  <footer>
-   <ul>
-     <li>motyli (at) kramolis.cz</li>
-   </ul>
+  <div role="main" class="container">
+    {{ content }}
+  </div>
+
+  <footer class="bg-secondary text-white footer">
+    <div class="container">
+      <span class="float-right">
+        <a href="#top" class="text-white">&#9650;</a>
+      </span>
+      <span>
+        {{ site.email }} (c) 2017
+      </span>
+    </div>
   </footer>
-  </body>
 
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+</body>
 </html>
