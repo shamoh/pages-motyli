@@ -5,6 +5,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Amatérské stránky o motýlech od amatérských chovatelů, motýlů.">
+  <meta name="keywords" content="motýl,attacus,atlas,imperator">
+  <meta name="author" content="Kramlíci">
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/main.css">
@@ -12,30 +15,32 @@
 
 <body>
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
-    <a class="navbar-brand" href="/">Motýli</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
-        {% for item in site.data.menu.items %}
-          {% assign active = false %}
-          {% if item.url == '/' %}
-            {% if page.url == '/' %}
-              {% assign active = true %}
-            {% elsif page.url == '/' %}
-              {% assign active = true %}
+    <div class="container">
+      <a class="navbar-brand" href="/">Motýli</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          {% for item in site.data.menu.items %}
+            {% assign active = false %}
+            {% if item.url == '/' %}
+              {% if page.url == '/' %}
+                {% assign active = true %}
+              {% elsif page.url == '/' %}
+                {% assign active = true %}
+              {% endif %}
+            {% else %}
+              {% if page.url contains item.url %}
+                {% assign active = true %}
+              {% endif %}
             {% endif %}
-          {% else %}
-            {% if page.url contains item.url %}
-              {% assign active = true %}
-            {% endif %}
-          {% endif %}
-          <li class="nav-item {% if active %}active{% endif %}">
-            <a class="nav-link" href="{{ item.url }}">{{ item.title }}{% if active %}<span class="sr-only">(current){%endif %}</a>
-          </li>
-        {% endfor %}
-      </ul>
+            <li class="nav-item {% if active %}active{% endif %}">
+              <a class="nav-link" href="{{ item.url }}">{{ item.title }}{% if active %}<span class="sr-only">(current){%endif %}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -46,10 +51,10 @@
   <footer class="bg-secondary text-white footer">
     <div class="container">
       <span class="float-right">
-        <a href="#top" class="text-white">&#9650;</a>
+        <a href="#top" class="text-white">&#x25B2;</a>
       </span>
       <span>
-        {{ site.email }} (c) 2017
+        &#x00A9; {{ site.email }} 2017
       </span>
     </div>
   </footer>
