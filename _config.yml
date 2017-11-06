@@ -1,6 +1,7 @@
 exclude:
-  - vendor
+  - create-thumbnails.bat
   - README.md
+  - vendor
 
 title: 'Motýli'
 # encode: http://wbwip.com/wbw/emailencoder.html

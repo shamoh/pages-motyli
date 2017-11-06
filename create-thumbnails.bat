@@ -10,3 +10,5 @@ FOR %%d in (attacus) DO (
   )
   echo ---------
 )
+
+PAUSE

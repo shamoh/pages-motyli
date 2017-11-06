@@ -31,16 +31,11 @@ nav {
   margin-bottom: 10px;
 }
 
-.photo-gallery, .photo-gallery li {
-	list-style: none;
-	padding: 0;
-}
-
 .photo-gallery li {
 	display: inline-block;
-	width: 33%;
+  margin-bottom: 4px;
 }
 
 .photo-gallery li img {
-	width: 100%;
+  height: 240px;
 }
