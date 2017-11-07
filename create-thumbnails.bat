@@ -2,7 +2,7 @@
 
 REM ImageMagick is installed - https://www.imagemagick.org/
 
-FOR %%d in (attacus) DO (
+FOR %%d in (images) DO (
   echo directory: %%d
   FOR %%a in ("%%d\*.jpg") DO (
     echo file: %%a
