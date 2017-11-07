@@ -8,8 +8,8 @@ layout: default
   <ul class="photo-gallery">
     {% for image in page.images %}
       <li>
-        <a href="{{ image.name }}.jpg">
-          <img src="{{ image.name }}-320.png" alt="{{ image.title}}"/>
+        <a href="/images/{{ image.name }}.jpg">
+          <img src="/images/{{ image.name }}-320.png" alt="{{ image.title }}"/>
         </a>
       </li>
     {% endfor %}
