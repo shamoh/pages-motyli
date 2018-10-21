@@ -2,7 +2,7 @@ language: ruby
 rvm:
 - 2.3.3
 
-script: jekyll build && htmlproofer ./_site
+script: jekyll build && htmlproofer --http-status-ignore 999 ./_site
 
 branches:
   only:
