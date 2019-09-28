@@ -7,10 +7,15 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'UA-3088225-4');
   </script>
-
+  <!-- Google reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js?render=6Lc9NboUAAAAAOROo8qb3YXa-PvAOJvy0eRXBHnF"></script>
+  <script>
+    grecaptcha.ready(function() {
+        grecaptcha.execute('6Lc9NboUAAAAAOROo8qb3YXa-PvAOJvy0eRXBHnF');
+    });
+  </script>
   <title>{{ page.title }} :: {{ site.title }}</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
