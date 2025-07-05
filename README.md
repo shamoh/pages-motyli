@@ -13,4 +13,4 @@ Using docker (https://hub.docker.com/r/alpine/bundle/):
 docker run -ti -v $(pwd):/apps alpine/bundle bash
 ```
 
-See http://127.0.0.1:4000.
+See http://127.0.0.1:4000
