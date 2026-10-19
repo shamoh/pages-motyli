@@ -18,15 +18,18 @@ npm run preview   # náhled hotového webu z dist/
 ## Struktura
 
 ```
-src/pages/        stránky; adresa = cesta k souboru (attacus/imperator.astro -> /attacus/imperator.html)
-src/layouts/      společný vzhled (Base.astro) a galerie (Gallery.astro)
-src/images/       originály fotek; náhledy a zmenšené verze vyrobí Astro při buildu
-src/site.ts       název webu, e-mail a menu
+src/pages/index.astro   jediná stránka: Attacus Imperator (úvod, druh, životní cyklus, galerie)
+src/pages/attacus/      staré adresy (/attacus/, imperator.html, imperator-gallery.html), přesměrují na úvod
+src/data/gallery.ts     fotky galerie podle stádií
+src/components/         prohlížeč fotek (Lightbox), přesměrování (Redirect)
+src/layouts/Base.astro  hlavička stránky
+src/styles/global.css   barvy, písma (Fraunces, Inter; z npm, bez Google Fonts), světlý i tmavý režim
+src/images/             originály fotek; náhledy a zmenšené verze vyrobí Astro při buildu
+src/site.ts             název webu, popis a e-mail
 public/           soubory beze změny (CNAME, favicon)
 ```
 
-Nová fotka do galerie: soubor do `src/images/` a řádek do seznamu `images`
-v `src/pages/attacus/imperator-gallery.astro`.
+Nová fotka do galerie: soubor do `src/images/` a jeho jméno (bez `.jpg`) do skupiny v `src/data/gallery.ts`.
 
 ## Nasazení
 

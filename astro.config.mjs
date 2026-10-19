@@ -8,5 +8,6 @@ export default defineConfig({
   compressHTML: false,
   // keeps the addresses of the old Jekyll site: attacus/imperator.html, attacus/index.html
   build: { format: 'preserve' },
-  integrations: [sitemap()],
+  // the old pages in attacus/ only redirect to the new one
+  integrations: [sitemap({ filter: (page) => !/\/attacus(\/|$)/.test(new URL(page).pathname) })],
 });

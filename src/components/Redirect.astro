@@ -1,0 +1,23 @@
+---
+// A page of the old site that moved: it sends the browser (and search engines, via the canonical link) to `to`.
+interface Props {
+  to: string;
+}
+
+const { to } = Astro.props;
+const target = new URL(to, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <title>Stránka se přestěhovala</title>
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={target} />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <p>Stránka se přestěhovala na <a href={to}>{target}</a>.</p>
+  </body>
+</html>
