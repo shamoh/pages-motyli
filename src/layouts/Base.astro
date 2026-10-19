@@ -1,15 +1,17 @@
 ---
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/main.css';
+import '../styles/global.css';
 import { site } from '../site';
 
 interface Props {
-  title: string;
+  title?: string;
+  description?: string;
+  /** a photo for link previews (Open Graph), an absolute or root-relative URL */
+  image?: string;
 }
 
-const { title } = Astro.props;
-const path = Astro.url.pathname;
-const isActive = (url: string) => (url === '/' ? path === '/' || path === '/index.html' : path.startsWith(url));
+const { title, description = site.description, image } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title ? `${title} · ${site.title}` : `${site.title} · ${site.name}`;
 ---
 
 <!doctype html>
@@ -17,48 +19,23 @@ const isActive = (url: string) => (url === '/' ? path === '/' || path === '/inde
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} :: {site.title}</title>
-    <meta name="description" content="Amatérské stránky o motýlech od amatérských chovatelů, motýlů." />
-    <meta name="keywords" content="motýl,butterfly,attacus,atlas,imperator" />
-    <meta name="author" content="Kramlíci" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.author} />
+    <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14170f" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="cs_CZ" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site).href} />}
+    <slot name="head" />
   </head>
-
-  <body id="top">
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
-      <div class="container">
-        <a class="navbar-brand" href="/">{site.title}</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Zobrazit menu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav me-auto">
-            {site.menu.map((item) => (
-              <li class="nav-item">
-                <a class:list={['nav-link', { active: isActive(item.url) }]} href={item.url} aria-label={item.label} aria-current={isActive(item.url) ? 'page' : undefined}>{item.title}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div role="main" class="container">
-      <slot />
-    </div>
-
-    <footer class="bg-secondary text-white footer">
-      <div class="container">
-        <span class="float-end">
-          <a href="#top" class="text-white" aria-label="Nahoru">&#x25B2;</a>
-        </span>
-        <span>&#x00A9; <Fragment set:html={site.email} /> 2018</span>
-      </div>
-    </footer>
-
-    <script>
-      import 'bootstrap/js/dist/collapse';
-    </script>
+  <body>
+    <slot />
   </body>
 </html>

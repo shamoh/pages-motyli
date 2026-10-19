@@ -1,29 +1,445 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage, Image, Picture } from 'astro:assets';
+import Lightbox from '../components/Lightbox.astro';
+import { gallery } from '../data/gallery';
 import Base from '../layouts/Base.astro';
 import { photo } from '../lib/images';
+import { site } from '../site';
+
+const hero = photo('attacus-imperator-butterfly-03');
+const ogImage = await getImage({ src: hero, width: 1200, format: 'jpeg' });
+
+const facts = [
+  { value: '34 cm', label: 'rozpětí křídel' },
+  { value: '4', label: 'stádia života' },
+  { value: '200–500', label: 'vajíček od jedné samice' },
+  { value: '½ roku', label: 'celý životní cyklus' },
+];
+
+const stages = [
+  {
+    title: 'Vajíčko',
+    time: '5–10 dní',
+    photo: 'attacus-imperator-eggs-2',
+    alt: 'Vajíčka Attacus Imperator',
+    text: 'Samice naklade 200 až 500 vajíček. Housenky se z nich líhnou za pět až deset dní.',
+  },
+  {
+    title: 'Housenka',
+    latin: 'larva',
+    time: 'asi 3 měsíce',
+    photo: 'attacus-imperator-caterpillar-23',
+    alt: 'Housenka Attacus Imperator',
+    text: 'Živí se šeříkem nebo ptačím zobem a mezi svlékáními projde přibližně pěti stádii, kterým se říká instary. Za zhruba tři měsíce doroste délky ukazováčku, tloušťkou ale spíš palce. Pak přestane žrát a začne spřádat vlákno.',
+  },
+  {
+    title: 'Kukla',
+    latin: 'pupárium',
+    time: 'měsíc až půl roku',
+    photo: 'attacus-imperator-butterfly-01',
+    alt: 'Motýl Attacus Imperator vylézající ze zámotku',
+    text: 'Housenka se zamotá mezi listy do kokonu a během týdne se v něm promění v kuklu. Zámotek je nejdřív béžový, po pár dnech ztmavne a zhnědne. Kuklu je potřeba denně rosit, aby nevyschla. Jak dlouho v ní zůstane, záleží na teplotě: nám se kuklení podařilo o několik měsíců oddálit hibernací v lednici, protože jsme se báli, že velmi žravé housenky přes zimu samotným ptačím zobem neuživíme.',
+  },
+  {
+    title: 'Motýl',
+    latin: 'imágo',
+    time: '1–2 týdny',
+    photo: 'attacus-imperator-female',
+    alt: 'Samička Attacus Imperator',
+    text: 'Vylíhlému motýlovi se nejdřív suší křídla a během půl dne vypustí ze zadečku drobnou kapku červenobílé tekutiny. Potravu už nepřijímá a žije jen z tukových zásob. Samec a samice se spojí zadečky, někdy i na několik hodin, samice naklade vajíčka a celý cyklus začíná znovu.',
+  },
+];
+
+// a thumbnail links to the photo reduced to at most 2048 px, which the viewer (Lightbox) shows
+const groups = await Promise.all(
+  gallery.map(async (group) => ({
+    ...group,
+    items: await Promise.all(
+      group.photos.map(async (name) => {
+        const src = photo(name);
+        const full = await getImage({ src, width: Math.min(src.width, 2048), format: 'webp', quality: 82 });
+        return { src, href: full.src };
+      }),
+    ),
+  })),
+);
+const photoCount = gallery.reduce((sum, group) => sum + group.photos.length, 0);
 ---
 
-<Base title="Motýli">
-  <p class="lead text-justify">
-    Vítejte na stránkách amatérských chovatelů motýlů.
-  </p>
-
-  <div class="container">
-    <div class="row">
-      <div class="card p-0" style="width: 320px;">
-        <a href="attacus/" class="card-link">
-          <Image class="card-img-top" src={photo('attacus-imperator-female')} width={320} densities={[1, 2]} alt="Samička Attacus Imperator" />
-        </a>
-        <div class="card-body">
-          <h4 class="card-title">Attacus</h4>
-          <p class="card-text text-justify">
-            <a href="attacus/">Attacus</a> patří mezi největší motýli na světě.
-            Asi nejznámější je <em>Ataccus Atlas</em>.
-            My máme osobní zkušenost s <a href="attacus/imperator.html">Attacus Imperator</a>.
-          </p>
-        </div>
-      </div>
+<Base image={ogImage.src}>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/">Motýli</a>
+      <nav aria-label="Obsah stránky">
+        <a href="#druh">Druh</a>
+        <a href="#cyklus">Životní cyklus</a>
+        <a href="#galerie">Galerie</a>
+      </nav>
     </div>
-  </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <Picture
+        src={hero}
+        formats={['webp']}
+        widths={[800, 1400, 2000, 2800]}
+        sizes="100vw"
+        alt="Motýl Attacus Imperator s roztaženými křídly"
+        class="hero-img"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="hero-text wrap">
+        <p class="eyebrow">Z našeho domácího chovu</p>
+        <h1 id="title">Attacus <em>Imperator</em></h1>
+        <p class="hero-sub">Jeden z největších motýlů světa: od vajíčka přes housenku a kuklu až po motýla s rozpětím křídel 34&nbsp;cm.</p>
+      </div>
+    </section>
+
+    <div class="facts wrap" role="list">
+      {facts.map((fact) => (
+        <div class="fact" role="listitem">
+          <strong>{fact.value}</strong>
+          <span>{fact.label}</span>
+        </div>
+      ))}
+    </div>
+
+    <section id="druh" class="species wrap">
+      <div class="species-text">
+        <p class="eyebrow">Druh</p>
+        <h2>Méně známý bratr <em>Attacus Atlas</em></h2>
+        <p class="lead">
+          Attacus Imperator patří k čeledi martináčovitých. Je to noční motýl, tedy můra, z tropických
+          a subtropických pralesů jihovýchodní Asie.
+        </p>
+        <p>
+          Jeho bratr <strong>Attacus Atlas</strong> je díky ploše křídel až 400&nbsp;cm² považován za největšího motýla
+          na světě. Imperator sice není tak pestře vybarvený, ale podle dostupných informací i našich zkušeností
+          z domácího chovu je o něco málo větší: rozpětí jeho křídel dosahuje až 34&nbsp;cm.
+        </p>
+        <p>
+          V jihovýchodní Asii se jeho vlákna, podobná hedvábí a vlně, používají k výrobě látek, podobně jako vlákna
+          bource morušového. Chov kvůli vláknu je ale proti bourci zanedbatelný.
+        </p>
+      </div>
+      <figure class="species-photo">
+        <Image src={photo('attacus-imperator-male')} widths={[480, 960]} sizes="(min-width: 60rem) 28rem, 100vw" alt="Samec Attacus Imperator" />
+        <figcaption>Samec Attacus Imperator</figcaption>
+      </figure>
+    </section>
+
+    <section id="cyklus" class="cycle" aria-labelledby="cycle-title">
+      <div class="wrap">
+        <p class="eyebrow">Životní cyklus</p>
+        <h2 id="cycle-title">Čtyři proměny za půl roku</h2>
+        <ol class="stages">
+          {stages.map((stage, i) => (
+            <li class="stage">
+              <Image src={photo(stage.photo)} widths={[400, 800]} sizes="(min-width: 60rem) 17rem, (min-width: 36rem) 45vw, 100vw" alt={stage.alt} class="stage-img" />
+              <div class="stage-body">
+                <p class="stage-num">{String(i + 1).padStart(2, '0')} · {stage.time}</p>
+                <h3>{stage.title}{stage.latin && <span class="latin"> ({stage.latin})</span>}</h3>
+                <p>{stage.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section id="galerie" class="wrap" aria-labelledby="gallery-title">
+      <p class="eyebrow">Galerie</p>
+      <h2 id="gallery-title">{photoCount} fotek z našeho chovu</h2>
+      {groups.map((group) => (
+        <div class="group">
+          <h3 id={group.id}>{group.title} <span class="count">{group.items.length}</span></h3>
+          <ul class="grid">
+            {group.items.map((item) => (
+              <li>
+                <a href={item.href} data-lightbox={group.title}>
+                  <Image src={item.src} widths={[240, 480]} sizes="(min-width: 60rem) 14rem, (min-width: 36rem) 30vw, 45vw" alt={group.alt} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p>Stránky amatérských chovatelů motýlů · {site.author}</p>
+      <p><Fragment set:html={`<a href="mailto:${site.email}">${site.email}</a>`} /></p>
+    </div>
+  </footer>
+
+  <Lightbox />
 </Base>
+
+<style>
+  .topbar {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
+    color: #f7f4ec;
+  }
+  .topbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1.25rem;
+  }
+  .topbar a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .brand {
+    font: 500 1.25rem/1 var(--serif);
+  }
+  .topbar nav {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    font-size: 0.9rem;
+  }
+  .topbar nav a {
+    opacity: 0.85;
+  }
+  .topbar nav a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .hero {
+    position: relative;
+    min-height: min(92vh, 60rem);
+    display: grid;
+    align-items: end;
+    padding: 0;
+    color: #f7f4ec;
+    overflow: hidden;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgb(16 20 12 / 0.85), rgb(16 20 12 / 0.15) 55%, rgb(16 20 12 / 0.45));
+  }
+  .hero-text {
+    position: relative;
+    z-index: 1;
+    padding-block: 8rem clamp(3rem, 7vw, 5rem);
+  }
+  .hero .eyebrow {
+    color: var(--accent-soft);
+  }
+  @media (prefers-color-scheme: dark) {
+    .hero .eyebrow {
+      color: #e9c9bf;
+    }
+  }
+  h1 {
+    font-size: clamp(3.25rem, 11vw, 8.5rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+  h1 em,
+  h2 em {
+    font-style: italic;
+    font-weight: 300;
+  }
+  .hero-sub {
+    max-width: 34rem;
+    margin-top: 1.5rem;
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: rgb(247 244 236 / 0.9);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--line);
+  }
+  .fact {
+    padding: 2rem 1rem 2rem 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+  .fact + .fact {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--line);
+  }
+  .fact strong {
+    font: 400 clamp(1.75rem, 4vw, 2.75rem)/1 var(--serif);
+  }
+  .fact span {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 40rem) {
+    .facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .fact:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .fact:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+  }
+
+  .species {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .species h2 {
+    margin-bottom: 1.5rem;
+  }
+  .species-text {
+    max-width: var(--text);
+  }
+  .species-photo {
+    margin: 0;
+  }
+  .species-photo :global(img),
+  .stage :global(.stage-img) {
+    border-radius: var(--radius);
+  }
+  figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 52rem) {
+    .species {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cycle {
+    background: var(--paper-2);
+  }
+  .cycle h2 {
+    margin-bottom: 3rem;
+  }
+  .stages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+    counter-reset: stage;
+  }
+  .stage :global(.stage-img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .stage-body {
+    padding-top: 1.25rem;
+  }
+  .stage-num {
+    font: 600 0.75rem/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .stage h3 {
+    margin-bottom: 0.75rem;
+  }
+  .latin {
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1rem;
+    color: var(--ink-soft);
+  }
+  .stage p:last-child {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 60rem) {
+    .stages {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 36rem) {
+    .stages {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #gallery-title {
+    margin-bottom: 1rem;
+  }
+  .group {
+    margin-top: 3rem;
+  }
+  .group h3 {
+    margin-bottom: 1rem;
+    scroll-margin-top: 1rem;
+  }
+  .count {
+    font: 500 0.8rem/1 var(--sans);
+    color: var(--ink-soft);
+    vertical-align: middle;
+    margin-left: 0.25rem;
+  }
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(14rem, 42vw), 1fr));
+    gap: 0.5rem;
+  }
+  .grid a {
+    display: block;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--paper-2);
+  }
+  .grid :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 400ms ease, opacity 200ms;
+  }
+  .grid a:hover :global(img),
+  .grid a:focus-visible :global(img) {
+    transform: scale(1.04);
+  }
+
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: 2rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+  }
+  .footer p {
+    margin: 0;
+  }
+</style>

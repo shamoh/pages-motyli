@@ -1,0 +1,129 @@
+---
+// The photo viewer of the gallery: a link with data-lightbox opens its href (the large photo) in a <dialog>;
+// arrows, swipe and the keyboard (←, →, Esc) move between the photos of the page. Without JavaScript
+// the links simply open the photo.
+---
+
+<dialog class="lightbox" aria-label="Prohlížeč fotek">
+  <figure>
+    <img alt="" />
+    <figcaption></figcaption>
+  </figure>
+  <button class="lb-close" type="button" aria-label="Zavřít">×</button>
+  <button class="lb-prev" type="button" aria-label="Předchozí fotka">‹</button>
+  <button class="lb-next" type="button" aria-label="Další fotka">›</button>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox')!;
+  const img = dialog.querySelector('img')!;
+  const caption = dialog.querySelector('figcaption')!;
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]')];
+  let current = 0;
+
+  function show(index: number) {
+    current = (index + links.length) % links.length;
+    const link = links[current];
+    const thumb = link.querySelector('img');
+    img.src = link.href;
+    img.alt = thumb?.alt ?? '';
+    caption.textContent = `${link.dataset.lightbox} · ${current + 1} / ${links.length}`;
+  }
+
+  links.forEach((link, index) =>
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      show(index);
+      dialog.showModal();
+    }),
+  );
+
+  dialog.querySelector('.lb-close')!.addEventListener('click', () => dialog.close());
+  dialog.querySelector('.lb-prev')!.addEventListener('click', () => show(current - 1));
+  dialog.querySelector('.lb-next')!.addEventListener('click', () => show(current + 1));
+  // a click on the dark backdrop (the dialog itself, not the photo or a button) closes it
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') show(current - 1);
+    if (event.key === 'ArrowRight') show(current + 1);
+  });
+
+  let touchX: number | null = null;
+  dialog.addEventListener('touchstart', (event) => (touchX = event.touches[0].clientX), { passive: true });
+  dialog.addEventListener('touchend', (event) => {
+    if (touchX === null) return;
+    const dx = event.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+    touchX = null;
+  });
+</script>
+
+<style>
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(10 12 8 / 0.94);
+    color: #ece6d6;
+  }
+  .lightbox::backdrop {
+    background: transparent;
+  }
+  figure {
+    margin: 0;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    place-items: center;
+    padding: 3.5rem 1rem 1rem;
+    pointer-events: none;
+  }
+  img {
+    max-width: 100%;
+    max-height: calc(100dvh - 7rem);
+    object-fit: contain;
+    border-radius: 6px;
+    pointer-events: auto;
+  }
+  figcaption {
+    padding-top: 0.75rem;
+    font-size: 0.875rem;
+    color: #b3ad9c;
+  }
+  button {
+    position: absolute;
+    border: 0;
+    background: rgb(255 255 255 / 0.08);
+    color: inherit;
+    font: 300 2rem/1 var(--sans);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  button:hover,
+  button:focus-visible {
+    background: rgb(255 255 255 / 0.2);
+  }
+  .lb-close {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+  .lb-prev,
+  .lb-next {
+    top: 50%;
+    translate: 0 -50%;
+  }
+  .lb-prev {
+    left: 0.75rem;
+  }
+  .lb-next {
+    right: 0.75rem;
+  }
+</style>
