@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { photo } from '../../lib/images';
+---
+
+<Base title="Attacus">
+  <h1>Attacus</h1>
+
+  <p class="lead text-justify">
+    Attacus patří mezi největší motýli na světě.
+  </p>
+
+  <ul class="list-unstyled">
+    <li class="media d-flex">
+      <a href="imperator.html" class="flex-shrink-0">
+        <Image class="me-3 rounded" src={photo('attacus-imperator-female')} width={160} densities={[1, 2]} alt="Samička Attacus Imperator" />
+      </a>
+      <div class="flex-grow-1">
+        <h5 class="mt-0 mb-1">Attacus Imperator</h5>
+        <p class="text-justify">
+          Attacus Imperator je méně známý bratr druhu <strong>Attacus Atlas</strong>.
+          Sice není tak krásně vybarven, ale dle všeho je o něco málo větši.
+        </p>
+        <div class="text-end">
+          <a href="imperator.html" class="card-link">Detaily</a>
+          <a href="imperator-gallery.html" class="card-link">Galerie</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</Base>

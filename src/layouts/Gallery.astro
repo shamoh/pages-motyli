@@ -1,0 +1,37 @@
+---
+import { getImage, Image } from 'astro:assets';
+import Base from './Base.astro';
+import { photo } from '../lib/images';
+
+interface Props {
+  title: string;
+  images: { name: string; title: string }[];
+}
+
+const { title, images } = Astro.props;
+
+// a thumbnail links to the photo, reduced to at most 2048 px from the multi-megabyte original
+const items = await Promise.all(
+  images.map(async (image) => {
+    const src = photo(image.name);
+    const full = await getImage({ src, width: Math.min(src.width, 2048), format: 'jpeg' });
+    return { ...image, src, href: full.src };
+  }),
+);
+---
+
+<Base title={title}>
+  <div class="text-center">
+    <slot />
+
+    <ul class="photo-gallery">
+      {items.map((item) => (
+        <li>
+          <a href={item.href}>
+            <Image src={item.src} alt={item.title} height={240} densities={[1, 2]} />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
