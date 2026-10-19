@@ -1,0 +1,24 @@
+{
+  "name": "motyli",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.0",
+    "bootstrap": "^5.3.8",
+    "sharp": "^0.35.4"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "sharp": true,
+    "fsevents": false
+  }
+}

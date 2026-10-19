@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { photo } from '../lib/images';
+---
+
+<Base title="Motýli">
+  <p class="lead text-justify">
+    Vítejte na stránkách amatérských chovatelů motýlů.
+  </p>
+
+  <div class="container">
+    <div class="row">
+      <div class="card p-0" style="width: 320px;">
+        <a href="attacus/" class="card-link">
+          <Image class="card-img-top" src={photo('attacus-imperator-female')} width={320} densities={[1, 2]} alt="Samička Attacus Imperator" />
+        </a>
+        <div class="card-body">
+          <h4 class="card-title">Attacus</h4>
+          <p class="card-text text-justify">
+            <a href="attacus/">Attacus</a> patří mezi největší motýli na světě.
+            Asi nejznámější je <em>Ataccus Atlas</em>.
+            My máme osobní zkušenost s <a href="attacus/imperator.html">Attacus Imperator</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
